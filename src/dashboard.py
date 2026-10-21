@@ -1,35 +1,8 @@
-import mne
-from mne.datasets import eegbci
-import numpy as np
+from utils import load_and_preprocess, extract_frequency_bands, get_recording_metadata
 import matplotlib.pyplot as plt
+import numpy as np
 from matplotlib.gridspec import GridSpec
-def load_and_preprocess(subjects=1, runs=1):
-    """Load and clean EEG data"""
-    raw_fnames = eegbci.load_data(subjects=subjects, runs=[runs], path='data/')
-    raw = mne.io.read_raw_edf(raw_fnames[0], preload=True)
-    raw.filter(l_freq=1.0, h_freq= 40.0)
-    raw.notch_filter(freqs=60)
-    return raw
-
-def extract_frequence_bands(raw):
-    """Extract frequency bands"""
-    bands = {
-        'Delta': (0.5,4), # Deep Sleep
-        'Theta': (4,8),     # Drowsiness, meditation
-        'Alpha': (8,13),   # Relaxation, eyes closed
-        'Beta': (13,30)   # Active thinking, focused
-    }
-
-    band_data = {}
-
-    for band_name, (low_freq, high_freq) in bands.items():
-        raw_band = raw.copy().filter(l_freq=low_freq, h_freq=high_freq)
-        data = raw_band.get_data()
-        power = np.mean(data ** 2)
-        band_data[band_name] = power
-
-    return band_data
-
+import mne
 
 def create_dashboard(raw, band_powers):
     """Create comprehensive EEG analysis dashboard"""
@@ -136,7 +109,7 @@ if __name__ == "__main__":
     raw = load_and_preprocess(subjects=1, runs=1)
 
     print("Extracting frequency bands...")
-    band_powers = extract_frequence_bands(raw)
+    band_powers = extract_frequency_bands(raw)
 
     print("Creating dashboard...")
     create_dashboard(raw, band_powers)
