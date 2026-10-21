@@ -67,4 +67,4 @@ python preprocessing.py # for pre/post processing comparison
 ```
 
 ## Example Visualizations
-![dashboard visual](src\output\eeg_dashboard.png)
+![dashboard visual](src/output/eeg_dashboard.png)
